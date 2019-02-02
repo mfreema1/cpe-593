@@ -1,3 +1,9 @@
+/**
+ * @author: Mark Freeman
+ * @assignment: hw1b
+ * @pledge: I pledge my honor that I have abided by the Stevens Honor System.
+ */
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +52,7 @@ public class Main {
         return calculatedResult;
     }
 
+    //TODO: retry non-recursive solution eventually
 //    public static int choose(int n, int r) {
 //        Map<choosePair, Integer> memo = new HashMap<>();
 //        Queue<choosePair> pairs = new ArrayDeque<>();

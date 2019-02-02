@@ -50,8 +50,8 @@ public class Main {
             for(int i = 3; i < n; i += 2) { //O(n) time
                 if(numbers[i]) {
                     count++;
-                    if(i < Math.sqrt(Integer.MAX_VALUE)) { //we don't take kindly to overflows 'round these parts
-                        for (int j = i * i; j < n; j += 2 * i) { //O(?)
+                    if(i < Math.sqrt(n)) { //we don't take kindly to overflows 'round these parts
+                        for (int j = i * i; j < n; j += 2 * i) { //O(n) with a good constant??
                             numbers[j] = false;
                         }
                     }
