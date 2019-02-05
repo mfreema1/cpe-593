@@ -1,5 +1,22 @@
+/**
+ * @author: Mark Freeman
+ * @assignment: hw1b
+ * @pledge: I pledge my honor that I have abided by the Stevens Honor System.
+ */
+
 import java.util.HashMap;
 import java.util.Map;
+
+//class choosePair {
+//
+//    int n;
+//    int r;
+//
+//    public choosePair(int n, int r) {
+//        this.n = n;
+//        this.r = r;
+//    }
+//}
 
 public class Main {
 
@@ -34,6 +51,28 @@ public class Main {
         memo.put(parenthesize(n, r), calculatedResult);
         return calculatedResult;
     }
+
+    //TODO: retry non-recursive solution eventually
+//    public static int choose(int n, int r) {
+//        Map<choosePair, Integer> memo = new HashMap<>();
+//        Queue<choosePair> pairs = new ArrayDeque<>();
+//        choosePair root = new choosePair(n, r);
+//        pairs.offer(root);
+//        int buildup = 0;
+//        while(!pairs.isEmpty()) {
+//            choosePair pair = pairs.poll();
+//            if(pair.n == pair.r || pair.r == 0)
+//                buildup += 1;
+//            else if(memo.get(pair) != null){
+//                buildup += memo.get(pair);
+//            }
+//            else {
+//                pairs.offer(new choosePair(pair.n - 1,pair.r - 1));
+//                pairs.offer(new choosePair(pair.n - 1, pair.r));
+//            }
+//        }
+//        return memo.get(root);
+//    }
 
     //tricky function, seems fine on smaller n choose r values, but will fail fantastically for larger values of n
     public static int chooseSlow(int n, int r) {
