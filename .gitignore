@@ -3,4 +3,3 @@
 .project
 *.iml
 **/out/*
-**/env/*
