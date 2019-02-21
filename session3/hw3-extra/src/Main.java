@@ -3,7 +3,7 @@
 //@pledge: I pledge my honor that I have abided by the Stevens Honor System
 
 import java.util.Random;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 
 import java.util.Arrays;
@@ -11,27 +11,21 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
-        //search for solutions between k = 0 and k = 1000
-        int sortSize = 10000000;
-        int optimalK = goldenMeanSearch(Main::timeFunction, 0, 200, sortSize);
+        //search for solutions between k = 0 and k = 1000 on an array of 10 million elements
+        int sortSize = 10000000, lowerSearchBound = 0, upperSearchBound = 1000;
+        int optimalK = goldenMeanSearch(Main::timeFunction, lowerSearchBound, upperSearchBound, sortSize);
         System.out.println("Optimal K for sort of size " + sortSize + " found to be " + optimalK);
     }
 
-    //make a random array for each iteration and pass it to the quicksort function.  Time how long it takes to sort
-    //the array.  Do this 1000 times with different arrays to eliminate the possibility that some k values get better
-    //starting arrays than others.
-    private static int iterations = 1;
-    public static int timeFunction(int sortSize) {
-        double buildup = 0;
-        for(int i = 0; i < iterations; i++) {
-            int[] data = createRandomArray(sortSize);
-            long start = System.nanoTime();
-            optimizedQuicksort(data);
-            insertionSort(data); //finish it up
-            long end = System.nanoTime();
-            buildup += Math.log((end - start));
-        }
-        return (int)Math.round(Math.exp(buildup / iterations) / 1000000); //geometric mean with overflow guard in milliseconds
+    //time the knuth-optimized quicksort, now that we're doing only 1 iteration, no need to take geometric mean
+    public static int timeFunction(int bucketValue, int sortSize) {
+        int[] data = createRandomArray(sortSize);
+        long start = System.nanoTime();
+        k = bucketValue;
+        optimizedQuicksort(data);
+        insertionSort(data); //finish it up
+        long end = System.nanoTime();
+        return (int)Math.round((end - start) / 1000000); //geometric mean with overflow guard in milliseconds
     }
 
     //perform a standard insertion sort
@@ -47,34 +41,19 @@ public class Main {
         }
     }
 
-
-    //step 1: take the ln of all numbers
-    //step 2: add all numbers
-    //step 3: divide by n
-    //step 4: raise to power of e
-    public static int geometricMean(int[] data) {
-        int buildup = 0;
-        for(int i = 0; i < data.length; i++) {
-            buildup += Math.log(data[i]) / data.length;
-        }
-        return (int)Math.round(Math.exp(buildup));
-    }
-
     //just provide default values
     public static void optimizedQuicksort(int[] data) {
         optimizedQuicksort(data, 0, data.length - 1);
     }
 
-    //run an optimized quicksort algorithm with insertion sort on buckets at or below
-    //k elements
-    // public static int k;
-    private static int k;
+    //run an optimized quicksort algorithm skipping buckets of size k or less
+    private static int k; //doesn't change through recursive calls
     public static void optimizedQuicksort(int[] data, int left, int right) {
         if(left >= right || right - left + 1 <= k) {
             return;
         }
 
-        int randomIndex = (int)(Math.random() * (right - left)) + left;
+        int randomIndex = random.nextInt(right - left) + left;
         int pivot = data[randomIndex];
         int i = left, j = right;
         while(true) {
@@ -120,17 +99,16 @@ public class Main {
     }
 
     //run a golden mean search to find the minimum of the given function between the two bounds a and b
-    public static int goldenMeanSearch(Function<Integer, Integer> func, int a, int b, int sortSize) {
+    //doesn't need to be a bifunction, we just pass k into the time function to set it as static right before
+    //jumping into quicksort to avoid passing it in the recursive calls
+    public static int goldenMeanSearch(BiFunction<Integer, Integer, Integer> func, int a, int b, int sortSize) {
         double phi = (Math.sqrt(5) + 1) / 2;
         int delta = (int)Math.round((b - a) / phi);
         int right = a + delta;
         int left = b - delta;
 
-        k = left;
-        int runTimeLeft = func.apply(sortSize);
-
-        k = right;
-        int runTimeRight = func.apply(sortSize);
+        int runTimeLeft = func.apply(left, sortSize);
+        int runTimeRight = func.apply(right, sortSize);
 
         while(a < b) {
             if(runTimeLeft < runTimeRight) { //aim for the minimum
@@ -141,9 +119,8 @@ public class Main {
 
                 //now shift the runtimes too
                 runTimeRight = runTimeLeft;
-                k = left;
-                runTimeLeft = func.apply(sortSize);
-                System.out.println("Tried: k = " + k + " with average runtime " + runTimeLeft + " ms");
+                runTimeLeft = func.apply(left, sortSize);
+                System.out.println("Tried: k = " + left + " with average runtime " + runTimeLeft + " ms");
             }
             else {
                 //bring up the left, it is lower
@@ -153,13 +130,11 @@ public class Main {
                 right = a + delta;
 
                 runTimeLeft = runTimeRight;
-                k = right;
-                runTimeRight = func.apply(sortSize);
-                System.out.println("Tried: k = " + k + " with average runtime " + runTimeRight + " ms");
+                runTimeRight = func.apply(right, sortSize);
+                System.out.println("Tried: k = " + right + " with average runtime " + runTimeRight + " ms");
             }
         }
-        //is it always left? Or do we need to take the min of the two?  It always seems to be left in tests
-        //but I'm not sure
+        //print the optimal solution -- one will not have moved as the other runs off
         if(runTimeLeft < runTimeRight) {
             System.out.println("Found optimal solution to be: k = " + left + " with average runtime " + runTimeLeft + " ms");
             return left;
