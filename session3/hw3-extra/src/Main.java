@@ -2,40 +2,43 @@
 //@date: 2/11/2019
 //@pledge: I pledge my honor that I have abided by the Stevens Honor System
 
+import java.util.Random;
 import java.util.function.Function;
+
+
+import java.util.Arrays;
 
 public class Main {
 
     public static void main(String[] args) {
         //search for solutions between k = 0 and k = 1000
-        goldenMeanSearch(Main::timeFunction, 0, 10000);
-    }
-
-    //run a sort of 10,000 elements 1000 times.  We'll use this to hunt down our optimal solution
-    public static int timeFunction(int k) {
-        return timeFunction(10000, k, 1000, -1000, 1000);
+        int sortSize = 10000000;
+        int optimalK = goldenMeanSearch(Main::timeFunction, 0, 200, sortSize);
+        System.out.println("Optimal K for sort of size " + sortSize + " found to be " + optimalK);
     }
 
     //make a random array for each iteration and pass it to the quicksort function.  Time how long it takes to sort
     //the array.  Do this 1000 times with different arrays to eliminate the possibility that some k values get better
     //starting arrays than others.
-    public static int timeFunction(int sortSize, int k, int iterations, int lowerBound, int upperBound) {
-        long buildup = 0;
+    private static int iterations = 1;
+    public static int timeFunction(int sortSize) {
+        double buildup = 0;
         for(int i = 0; i < iterations; i++) {
-            int[] data = createRandomArray(sortSize, lowerBound, upperBound);
+            int[] data = createRandomArray(sortSize);
             long start = System.nanoTime();
-            optimizedQuicksort(data, k);
+            optimizedQuicksort(data);
+            insertionSort(data); //finish it up
             long end = System.nanoTime();
-            buildup += end - start;
+            buildup += Math.log((end - start));
         }
-        return (int)((buildup / iterations) / 1000); //average time in milliseconds
+        return (int)Math.round(Math.exp(buildup / iterations) / 1000000); //geometric mean with overflow guard in milliseconds
     }
 
-    //perform a standard insertion sort, but only between a select pair of indices
-    public static void sectionedInsertionSort(int[] data, int left, int right) {
-        for(int i = left + 1; i <= right; i++) {
+    //perform a standard insertion sort
+    public static void insertionSort(int[] data) {
+        for(int i = 1; i < data.length; i++) {
             int j = i;
-            while(j > left && data[j] < data[j - 1]) {
+            while(j > 0 && data[j] < data[j - 1]) {
                 int temp = data[j - 1];
                 data[j - 1] = data[j];
                 data[j] = temp;
@@ -44,21 +47,30 @@ public class Main {
         }
     }
 
+
+    //step 1: take the ln of all numbers
+    //step 2: add all numbers
+    //step 3: divide by n
+    //step 4: raise to power of e
+    public static int geometricMean(int[] data) {
+        int buildup = 0;
+        for(int i = 0; i < data.length; i++) {
+            buildup += Math.log(data[i]) / data.length;
+        }
+        return (int)Math.round(Math.exp(buildup));
+    }
+
     //just provide default values
-    public static void optimizedQuicksort(int[] data, int k) {
-        optimizedQuicksort(data, 0, data.length - 1, k);
+    public static void optimizedQuicksort(int[] data) {
+        optimizedQuicksort(data, 0, data.length - 1);
     }
 
     //run an optimized quicksort algorithm with insertion sort on buckets at or below
     //k elements
-    public static void optimizedQuicksort(int[] data, int left, int right, int k) {
-        if(left >= right) {
-            return;
-        }
-
-        //cutoff at k elements, sort this by insertion sort
-        if(right - left + 1 <= k) {
-            sectionedInsertionSort(data, left, right);
+    // public static int k;
+    private static int k;
+    public static void optimizedQuicksort(int[] data, int left, int right) {
+        if(left >= right || right - left + 1 <= k) {
             return;
         }
 
@@ -79,8 +91,8 @@ public class Main {
             }
 
             if (i >= j) {
-                optimizedQuicksort(data, left, j, k);
-                optimizedQuicksort(data, j + 1, right, k);
+                optimizedQuicksort(data, left, j);
+                optimizedQuicksort(data, j + 1, right);
                 return;
             }
             else { //not necessary but makes clearer
@@ -96,25 +108,29 @@ public class Main {
         data[right] = temp;
     }
 
-    //make a random array of 'number' elements consisting of numbers between the two bounds
-    public static int[] createRandomArray(int number, int lowerBound, int upperBound) {
+    //make a random array of n elements consisting of elements between 1 and n inclusive
+    private static Random random = new Random();
+    public static int[] createRandomArray(int number) {
         //both bounds inclusive
         int[] arr = new int[number];
         for(int i = 0; i < number; i++) {
-            arr[i] = (int)((Math.random() * (upperBound - lowerBound + 1))) + lowerBound;
+            arr[i] = random.nextInt(number) + 1;
         }
         return arr;
     }
 
     //run a golden mean search to find the minimum of the given function between the two bounds a and b
-    public static void goldenMeanSearch(Function<Integer, Integer> func, int a, int b) {
+    public static int goldenMeanSearch(Function<Integer, Integer> func, int a, int b, int sortSize) {
         double phi = (Math.sqrt(5) + 1) / 2;
         int delta = (int)Math.round((b - a) / phi);
         int right = a + delta;
         int left = b - delta;
 
-        int runTimeLeft = func.apply(left);
-        int runTimeRight = func.apply(right);
+        k = left;
+        int runTimeLeft = func.apply(sortSize);
+
+        k = right;
+        int runTimeRight = func.apply(sortSize);
 
         while(a < b) {
             if(runTimeLeft < runTimeRight) { //aim for the minimum
@@ -125,8 +141,9 @@ public class Main {
 
                 //now shift the runtimes too
                 runTimeRight = runTimeLeft;
-                runTimeLeft = func.apply(left);
-                System.out.println("Tried: k = " + left + " with average runtime " + runTimeLeft + " ms");
+                k = left;
+                runTimeLeft = func.apply(sortSize);
+                System.out.println("Tried: k = " + k + " with average runtime " + runTimeLeft + " ms");
             }
             else {
                 //bring up the left, it is lower
@@ -136,17 +153,20 @@ public class Main {
                 right = a + delta;
 
                 runTimeLeft = runTimeRight;
-                runTimeRight = func.apply(right);
-                System.out.println("Tried: k = " + right + " with average runtime " + runTimeRight + " ms");
+                k = right;
+                runTimeRight = func.apply(sortSize);
+                System.out.println("Tried: k = " + k + " with average runtime " + runTimeRight + " ms");
             }
         }
         //is it always left? Or do we need to take the min of the two?  It always seems to be left in tests
         //but I'm not sure
         if(runTimeLeft < runTimeRight) {
             System.out.println("Found optimal solution to be: k = " + left + " with average runtime " + runTimeLeft + " ms");
+            return left;
         }
         else {
             System.out.println("Found optimal solution to be: k = " + right + " with average runtime " + runTimeRight + " ms");
+            return right;
         }
     }
 }
