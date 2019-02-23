@@ -4,8 +4,6 @@
 
 import java.util.Random;
 import java.util.function.BiFunction;
-
-
 import java.util.Arrays;
 
 public class Main {
