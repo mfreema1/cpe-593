@@ -1,12 +1,23 @@
+//@author: Mark Freeman
+//@pledge: I pledge my honor that I have abided by the Stevens Honor System.
+
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
-        int[] arr =createRandomArray(1000);
-        System.out.println(Arrays.toString(arr));
-        quicksort(arr, 0, arr.length - 1);
-        System.out.println(Arrays.toString(arr));
+    public static void main(String[] args) throws IOException {
+        Scanner in = new Scanner(new File("hw3.dat"));
+        int n = in.nextInt();
+        int[] nums = new int[n];
+        for(int i = 0; i < n; i++) {
+            nums[i] = in.nextInt();
+        }
+        System.out.println(Arrays.toString(nums));
+        quicksort(nums, 0, nums.length - 1);
+        System.out.println(Arrays.toString(nums));
     }
 
     public static void quicksort(int[] data, int left, int right) {
@@ -45,14 +56,5 @@ public class Main {
         int temp = data[left];
         data[left] = data[right];
         data[right] = temp;
-    }
-
-    public static int[] createRandomArray(int number) {
-        int lowerBound = -2000, upperBound = 2000; //both inclusive
-        int[] arr = new int[number];
-        for(int i = 0; i < number; i++) {
-            arr[i] = (int)((Math.random() * (upperBound - lowerBound + 1))) + lowerBound;
-        }
-        return arr;
     }
 }
