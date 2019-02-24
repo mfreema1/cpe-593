@@ -4,4 +4,7 @@
 *.iml
 **/out/*
 **/env/*
+.vscode
 .directory
+**/.ipynb_checkpoints/*
+**/.vscode/*
