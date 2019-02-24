@@ -18,12 +18,12 @@ public class Main {
     //time the knuth-optimized quicksort, now that we're doing only 1 iteration, no need to take geometric mean
     public static int timeFunction(int bucketValue, int sortSize) {
         int[] data = createRandomArray(sortSize);
-        long start = System.nanoTime();
         k = bucketValue;
+        long start = System.nanoTime();
         optimizedQuicksort(data);
         insertionSort(data); //finish it up
         long end = System.nanoTime();
-        return (int)Math.round((end - start) / 1000000); //geometric mean with overflow guard in milliseconds
+        return Math.round((end - start) / 1000000); //geometric mean with overflow guard in milliseconds
     }
 
     //perform a standard insertion sort
