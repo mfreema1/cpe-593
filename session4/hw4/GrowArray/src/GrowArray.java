@@ -32,6 +32,18 @@ public class GrowArray {
         items = newArr;
     }
 
+    private void insertedGrow(int shiftIndex, Point p) { //insert a new element while growing the array
+        Point[] newArr = new Point[2 * items.length];
+        for(int i = 0; i < shiftIndex; i++) { //up to the shift index, simply copy
+            newArr[i] = items[i];
+        }
+        newArr[shiftIndex] = p;
+        for(int i = shiftIndex; i < items.length; i++) {
+            newArr[i + 1] = items[i];
+        }
+        items = newArr;
+    }
+
     private void shiftRight(int startingIndex, int numToShift) throws IndexOutOfBoundsException {
         if(numToShift + numUsed > items.length)
             throw new IndexOutOfBoundsException("Cannot shiftRight the array past the ending index");
@@ -56,18 +68,25 @@ public class GrowArray {
     public void addStart(Point p) {
         if (isFilled())
             shiftedGrow(1);
-        shiftRight(0, 1); //don't need to grow, only do a partial shiftRight
+        else
+            shiftRight(0, 1); //don't need to grow, only do a partial shiftRight
         items[0] = p;
         numUsed++;
     }
 
     public void insert(int i, Point p) throws IndexOutOfBoundsException {
         //shiftRight everything down one from i onward
-        if(i + 1 > numUsed)
+        if(i > numUsed)
             throw new IndexOutOfBoundsException("Cannot insert an element beyond the end of the array");
-        shiftRight(i, 1);
-        items[i] = p;
-        numUsed++;
+        if(isFilled()) {
+            insertedGrow(i, p);
+            numUsed++;
+        }
+        else {
+            shiftRight(i, 1);
+            items[i] = p;
+            numUsed++;
+        }
     }
 
     private Point copy(Point p) {
@@ -130,5 +149,9 @@ public class GrowArray {
             sb.append(items[numUsed - 1]);
         sb.append("]");
         return sb.toString();
+    }
+
+    public void empty() {
+        numUsed = 0;
     }
 }
