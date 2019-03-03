@@ -7,8 +7,6 @@ public class Point {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(").append(x).append(",").append(y).append(")");
-        return sb.toString();
+        return "(" + x + "," + y + ")";
     }
 }

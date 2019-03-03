@@ -8,6 +8,14 @@ public class GrowArray {
         items = new Point[1];
     }
 
+    public GrowArray(int initialSize) throws IllegalArgumentException {
+        if(initialSize < 1) {
+            throw new IllegalArgumentException("Cannot initialize an array with less than 1 size");
+        }
+        numUsed = 0;
+        items = new Point[initialSize];
+    }
+
     private boolean isFilled() {
         return numUsed == items.length;
     }
