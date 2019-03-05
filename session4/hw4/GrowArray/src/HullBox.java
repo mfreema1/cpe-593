@@ -1,7 +1,7 @@
 public class HullBox {
 
-    private Integer bigX; //box this one to check for initialization
-    private int littleX, bigY, littleY;
+    private Double bigX; //box this one to check for initialization
+    private double littleX, bigY, littleY;
     private GrowArray arr;
 
     public HullBox() {

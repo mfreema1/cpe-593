@@ -6,15 +6,14 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        File f = new File("src/hullData.dat");
+        File f = new File("hullData.dat");
         Scanner in = new Scanner(f);
-        int numPoints = in.nextInt();
 
         //gather up the first point, set to max and min for x and y
-        int dummy = in.nextInt();
-        int bigX = dummy, littleX = dummy;
-        dummy = in.nextInt();
-        int bigY = dummy, littleY = dummy;
+        double dummy = in.nextDouble();
+        double bigX = dummy, littleX = dummy;
+        dummy = in.nextDouble();
+        double bigY = dummy, littleY = dummy;
 
         //go make a big matrix of grow arrays
         int gridSize = 16;
@@ -26,9 +25,9 @@ public class Main {
         }
 
         //take a pass over the data -- learn the bounds on it
-        for(int i = 1; i < numPoints; i++) {
-            int newX = in.nextInt();
-            int newY = in.nextInt();
+        while(in.hasNextDouble()) {
+            double newX = in.nextDouble();
+            double newY = in.nextDouble();
 
             //update the known extrema
             bigX = Math.max(bigX, newX);
@@ -37,16 +36,16 @@ public class Main {
             littleY = Math.min(littleY, newY);
         }
 
-        double xPerBox = (double)(bigX - littleX) / gridSize;
-        double yPerBox = (double)(bigY - littleY) / gridSize;
+        double xPerBox = (bigX - littleX) / gridSize;
+        double yPerBox = (bigY - littleY) / gridSize;
         //now take a second pass and toss it all in
         Scanner again = new Scanner(f);
-        again.nextInt(); //throw out the first int -- remember that it's the number of points
-        for(int i = 0; i < numPoints; i++) {
-            int newX = again.nextInt();
-            int newY = again.nextInt();
+        while(again.hasNextDouble()) {
+            double newX = again.nextDouble();
+            double newY = again.nextDouble();
             double rowDouble = (newY - littleY) / yPerBox;
             double colDouble = (newX - littleX) / xPerBox;
+            //TODO: There's got to be a better way to do this...
             if(rowDouble == Math.floor(rowDouble) && rowDouble != 0) //if it's an exact hit (like on 16 -- out of bounds) round down
                 rowDouble--;
             if(colDouble == Math.floor(colDouble) && colDouble != 0)
