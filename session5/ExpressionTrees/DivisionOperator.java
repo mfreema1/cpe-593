@@ -29,9 +29,10 @@ public class DivisionOperator extends Operator {
         return this;
     }
 
+    //division rule
     @Override
     public Expression diff(char c) {
-        return null;
+        return new DivisionOperator(new PowerOperator(new Constant(2), right), new SubtractionOperator(new MultiplyOperator(right.diff(c), left), new MultiplyOperator(left.diff(c), right)));
     }
 
     @Override

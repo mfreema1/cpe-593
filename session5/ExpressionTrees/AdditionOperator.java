@@ -30,7 +30,7 @@ public class AdditionOperator extends Operator {
 
     @Override
     public Expression diff(char c) {
-        return null;
+        return new AdditionOperator(right.diff(c), left.diff(c));
     }
 
     @Override

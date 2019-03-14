@@ -27,7 +27,6 @@ public class MyExpressionTree {
         }
         //it must be an operator
         catch(NumberFormatException e) {
-<<<<<<< HEAD
             //we have either a variable or an operator
             if(token.equals("*"))
                 expressionStack.push(new MultiplyOperator(expressionStack.pop(), expressionStack.pop()));
@@ -43,17 +42,12 @@ public class MyExpressionTree {
                 expressionStack.push(new PowerOperator(expressionStack.pop(), expressionStack.pop()));
             else
                 expressionStack.push(new Variable(token.charAt(0)));
-=======
-            //pop 2 off the stack, make right and left children
-            Operator o = new Operator(expressionStack.pop(), expressionStack.pop(), token);
-            expressionStack.push(o);
->>>>>>> 846027d580b6c0590f668ea30be387bce0738322
         }
     }
 
     //TODO: extra credit
-    public void differentiate() {
-
+    public String differentiate(char c) {
+        return expressionStack.pop().eval().diff(c).toString();
     }
 
     //TODO: extra credit
@@ -61,12 +55,7 @@ public class MyExpressionTree {
 
     }
 
-<<<<<<< HEAD
     public String evaluate() {
         return expressionStack.pop().eval().toString();
-=======
-    public int evaluate() {
-        return expressionStack.pop().eval();
->>>>>>> 846027d580b6c0590f668ea30be387bce0738322
     }
 }

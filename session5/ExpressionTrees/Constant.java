@@ -1,14 +1,9 @@
 public class Constant implements Expression {
-<<<<<<< HEAD
     public int constant;
-=======
-    private int constant;
->>>>>>> 846027d580b6c0590f668ea30be387bce0738322
 
     public Constant(int constant) {
         this.constant = constant;
     }
-<<<<<<< HEAD
     
     public int getVal() {
         return constant;
@@ -39,11 +34,5 @@ public class Constant implements Expression {
     @Override
     public String toString() {
         return "" + constant;
-=======
-
-    @Override
-    public int eval() {
-        return constant;
->>>>>>> 846027d580b6c0590f668ea30be387bce0738322
     }
 }

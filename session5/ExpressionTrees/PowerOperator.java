@@ -32,7 +32,7 @@ public class PowerOperator extends Operator {
 
     @Override
     public Expression diff(char c) {
-        return null;
+        return new MultiplyOperator(left.diff(c), new MultiplyOperator(new PowerOperator(new SubtractionOperator(new Constant(1), right), left), right));
     }
 
     @Override

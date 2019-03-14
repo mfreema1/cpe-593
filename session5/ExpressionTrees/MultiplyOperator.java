@@ -30,9 +30,10 @@ public class MultiplyOperator extends Operator {
         return this;
     }
 
+    //multiplication rule
     @Override
     public Expression diff(char c) {
-        return null;
+        return new AdditionOperator(new MultiplyOperator(left.diff(c), right), new MultiplyOperator(right.diff(c), left));
     }
 
     @Override

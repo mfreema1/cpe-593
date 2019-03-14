@@ -31,7 +31,7 @@ public class SubtractionOperator extends Operator {
 
     @Override
     public Expression diff(char c) {
-        return null;
+        return new SubtractionOperator(right.diff(c), left.diff(c));
     }
 
     @Override
