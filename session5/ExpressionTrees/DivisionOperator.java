@@ -1,5 +1,7 @@
 public class DivisionOperator extends Operator {
 
+    private char symbol = '/';
+
     public DivisionOperator(Expression right, Expression left) {
         super(right, left);
     }
@@ -29,6 +31,29 @@ public class DivisionOperator extends Operator {
         return this;
     }
 
+    @Override
+    public Expression caseLeftOperator(Operator a, Constant b) {
+        if(b.getVal() == 1)
+            return a;
+        return this;
+    }
+
+    @Override
+    public Expression caseRightOperator(Constant a, Operator b) {
+        if(a.getVal() == 0)
+            return new Constant(0);
+        if(a.getVal() == 1)
+            return new PowerOperator(new Constant(-1), b);
+        return this;
+    }
+
+    @Override
+    public Expression caseBothOperators(Operator a, Operator b) {
+        if(hasEqualSubtrees())
+            return new Constant(1);
+        return this;
+    }
+
     //division rule
     @Override
     public Expression diff(char c) {
@@ -41,7 +66,7 @@ public class DivisionOperator extends Operator {
     }
 
     @Override
-    public String toString() {
-        return left + " " + right + " " + "/";
+    public char getSymbol() {
+        return symbol;
     }
 }

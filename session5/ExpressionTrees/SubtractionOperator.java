@@ -1,5 +1,7 @@
 public class SubtractionOperator extends Operator {
 
+    private char symbol = '-';
+
     public SubtractionOperator(Expression right, Expression left) {
         super(right, left);
     }
@@ -29,6 +31,30 @@ public class SubtractionOperator extends Operator {
         return this;
     }
 
+    //anything minus zero is that thing
+    @Override
+    public Expression caseLeftOperator(Operator a, Constant b) {
+        if(b.getVal() == 0)
+            return a;
+        return this;
+    }
+
+    //get it to just a negative if need be
+    @Override
+    public Expression caseRightOperator(Constant a, Operator b) {
+        if(a.getVal() == 0)
+            return new MultiplyOperator(b, new Constant(-1));
+        return this;
+    }
+
+    //any expression minus itself is zero
+    @Override
+    public Expression caseBothOperators(Operator a, Operator b) {
+        if(hasEqualSubtrees())
+            return new Constant(0);
+        return this;
+    }
+
     @Override
     public Expression diff(char c) {
         return new SubtractionOperator(right.diff(c), left.diff(c));
@@ -40,7 +66,7 @@ public class SubtractionOperator extends Operator {
     }
 
     @Override
-    public String toString() {
-        return left + " " + right + " " + "-";
+    public char getSymbol() {
+        return symbol;
     }
 }

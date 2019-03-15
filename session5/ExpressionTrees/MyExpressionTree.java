@@ -45,9 +45,8 @@ public class MyExpressionTree {
         }
     }
 
-    //TODO: extra credit
-    public String differentiate(char c) {
-        return expressionStack.pop().eval().diff(c).toString();
+    public Expression differentiate(char c) {
+        return expressionStack.pop().diff(c).eval();
     }
 
     //TODO: extra credit
@@ -55,7 +54,8 @@ public class MyExpressionTree {
 
     }
 
-    public String evaluate() {
-        return expressionStack.pop().eval().toString();
+    public Expression evaluate() {
+        System.out.println("Evaluate called");
+        return expressionStack.pop().eval();
     }
 }

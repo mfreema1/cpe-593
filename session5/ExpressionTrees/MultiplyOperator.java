@@ -1,5 +1,7 @@
 public class MultiplyOperator extends Operator {
 
+    private char symbol = '*';
+
     public MultiplyOperator(Expression right, Expression left) {
         super(right, left);
     }
@@ -30,6 +32,29 @@ public class MultiplyOperator extends Operator {
         return this;
     }
 
+    @Override
+    public Expression caseLeftOperator(Operator a, Constant b) {
+        if(b.getVal() == 0)
+            return new Constant(0);
+        if(b.getVal() == 1)
+            return a;
+        return this;
+    }
+
+    //multiplication is commutative
+    @Override
+    public Expression caseRightOperator(Constant a, Operator b) {
+        return caseLeftOperator(b, a);
+    }
+
+    //any expression times itself is the square of it
+    @Override
+    public Expression caseBothOperators(Operator a, Operator b) {
+        if(hasEqualSubtrees())
+            return new PowerOperator(new Constant(2), a);
+        return this;
+    }
+
     //multiplication rule
     @Override
     public Expression diff(char c) {
@@ -42,7 +67,7 @@ public class MultiplyOperator extends Operator {
     }
 
     @Override
-    public String toString() {
-        return left + " " + right + " " + "*";
+    public char getSymbol() {
+        return symbol;
     }
 }

@@ -1,5 +1,7 @@
 public class AdditionOperator extends Operator {
 
+    private char symbol = '+';
+
     public AdditionOperator(Expression right, Expression left) {
         super(right, left);
     }
@@ -29,6 +31,27 @@ public class AdditionOperator extends Operator {
     }
 
     @Override
+    public Expression caseLeftOperator(Operator a, Constant b) {
+        if(b.getVal() == 0)
+            return a;
+        return this;
+    }
+
+    //addition is reflexive
+    @Override
+    public Expression caseRightOperator(Constant a, Operator b) {
+        return caseLeftOperator(b, a);
+    }
+
+    //just multiply by 2
+    @Override
+    public Expression caseBothOperators(Operator a, Operator b) {
+        if(hasEqualSubtrees())
+            return new MultiplyOperator(a, new Constant(2));
+        return this;
+    }
+
+    @Override
     public Expression diff(char c) {
         return new AdditionOperator(right.diff(c), left.diff(c));
     }
@@ -39,7 +62,7 @@ public class AdditionOperator extends Operator {
     }
 
     @Override
-    public String toString() {
-        return left + " " + right + " " + "+";
+    public char getSymbol() {
+        return symbol;
     }
 }

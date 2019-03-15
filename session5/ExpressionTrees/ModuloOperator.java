@@ -1,5 +1,7 @@
 public class ModuloOperator extends Operator {
 
+    private char symbol = '%';
+
     public ModuloOperator(Expression right, Expression left) {
         super(right, left);
     }
@@ -26,6 +28,21 @@ public class ModuloOperator extends Operator {
     }
 
     @Override
+    public Expression caseLeftOperator(Operator a, Constant b) {
+        return null;
+    }
+
+    @Override
+    public Expression caseRightOperator(Constant a, Operator b) {
+        return null;
+    }
+
+    @Override
+    public Expression caseBothOperators(Operator a, Operator b) {
+        return null;
+    }
+
+    @Override
     public Expression diff(char c) {
         return null;
     }
@@ -36,7 +53,7 @@ public class ModuloOperator extends Operator {
     }
 
     @Override
-    public String toString() {
-        return left + " " + right + " " + "%";
+    public char getSymbol() {
+        return symbol;
     }
 }
