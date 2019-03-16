@@ -38,11 +38,15 @@ public abstract class Operator implements Expression{
     //utility function to help simplify operators like subtraction, division, and addition which all have
     //trivial solutions if the trees are the same
     public boolean hasEqualSubtrees() {
-        return left.equals(right);
+        boolean treesEqual = left.equals(right);
+        System.out.println(treesEqual);
+        return treesEqual;
+//        return left.equals(right);
     }
 
     //allow for comparison of operators to other expressions
-    public boolean equals(Expression expression) {
+    @Override
+    public boolean equals(Object expression) {
         if(expression == this)
             return true;
         if(!(expression instanceof Operator))

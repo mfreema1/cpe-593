@@ -32,6 +32,16 @@ public class Constant implements Expression {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if(this == o)
+            return true;
+        if(!(o instanceof Constant))
+            return false;
+        Constant c = (Constant)o;
+        return getVal() == c.getVal();
+    }
+
+    @Override
     public String toString() {
         return "" + constant;
     }

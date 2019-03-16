@@ -31,6 +31,16 @@ public class Variable implements Expression {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if(o == this)
+            return true;
+        if(!(o instanceof Variable))
+            return false;
+        Variable v = (Variable)o;
+        return letter == v.letter;
+    }
+
+    @Override
     public String toString() {
         return "" + letter;
     }
