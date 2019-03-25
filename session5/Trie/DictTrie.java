@@ -3,16 +3,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class DictTrie {
-    
-    public static final String LETTERS = "abcdefghijklmnopqrstuvwxyz";
-    
+        
     private static class Node {
         boolean isWord;
         Node[] connections;
 
         public Node() {
             this.isWord = false;
-            this.connections = new Node[LETTERS.length()];
+            this.connections = new Node[26];
         }
     }
 
@@ -24,43 +22,36 @@ public class DictTrie {
 
     public boolean isValidPrefix(String prefix) {
         Node temp = root;
-        for(char c : prefix.toCharArray()) {
-            if(temp == null)
+        for(int i = 0; i < prefix.length(); i++) {
+            char c = prefix.charAt(i);
+            int nextIndex = c - 'a';
+            if(temp.connections[nextIndex] == null)
                 return false;
-            temp = temp.connections[LETTERS.indexOf(c)];
+            temp = temp.connections[nextIndex];
         }
         return true;
     }
 
     public boolean isInDict(String word) {
         Node temp = root;
-        for(char c : word.toCharArray()) {
-            if(temp == null)
+        for(int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            int nextIndex = c - 'a';
+            if(temp.connections[nextIndex] == null)
                 return false;
-            temp = temp.connections[LETTERS.indexOf(c)];
+            temp = temp.connections[nextIndex];
         }
         return temp.isWord;
     }
 
-    //TODO: Why does this not work?
-    // public void add(String word) {
-    //     Node temp = root;
-    //     for(char c : word.toCharArray()) {
-    //         Node next = temp.connections[LETTERS.indexOf(c)];
-    //         if(next == null)
-    //             next = new Node();
-    //         temp = next;
-    //     }
-    //     temp.isWord = true;
-    // }
-
     public void add(String word) {
         Node temp = root;
-        for(char c : word.toCharArray()) {
-            int i = LETTERS.indexOf(c);
-            if(temp.connections[i] == null)
-                temp.connections[i] = new Node();
-            temp = temp.connections[i];
+        for(int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            int nextIndex = c - 'a';
+            if(temp.connections[nextIndex] == null)
+                temp.connections[nextIndex] = new Node();
+            temp = temp.connections[nextIndex];
         }
         temp.isWord = true;
     }
@@ -75,7 +66,7 @@ public class DictTrie {
             in.close();
         }
         catch(FileNotFoundException e) {
-            System.out.println("Could not find file");
+            System.out.println("Could not load dictionary at " + path);
         }
     }
 }
