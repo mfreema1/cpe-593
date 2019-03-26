@@ -62,7 +62,7 @@ public class SubtractionOperator extends Operator {
 
     @Override
     public Expression integrate(char c) {
-        return null;
+        return new SubtractionOperator(right.integrate(c), left.integrate(c));
     }
 
     @Override

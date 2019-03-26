@@ -58,7 +58,7 @@ public class AdditionOperator extends Operator {
 
     @Override
     public Expression integrate(char c) {
-        return null;
+        return new AdditionOperator(right.integrate(c), left.integrate(c));
     }
 
     @Override

@@ -5,7 +5,6 @@ public class PowerOperator extends Operator {
     public PowerOperator(Expression right, Expression left) {
         super(right, left);
     }
-
     
     @Override
     public Expression caseBothConstants(Constant a, Constant b) {

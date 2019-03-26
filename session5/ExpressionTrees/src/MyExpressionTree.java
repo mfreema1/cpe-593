@@ -46,16 +46,15 @@ public class MyExpressionTree {
     }
 
     public Expression differentiate(char c) {
-        return expressionStack.pop().diff(c).eval();
+        return expressionStack.peek().diff(c).eval();
     }
 
     //TODO: extra credit
-    public void integrate() {
-
+    public Expression integrate(char c) {
+        return expressionStack.peek().integrate(c).eval();
     }
 
     public Expression evaluate() {
-        System.out.println("Evaluate called");
-        return expressionStack.pop().eval();
+        return expressionStack.peek().eval();
     }
 }

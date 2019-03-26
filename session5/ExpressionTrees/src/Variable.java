@@ -27,7 +27,10 @@ public class Variable implements Expression {
 
     @Override
     public Expression integrate(char c) {
-        return null;
+        if(letter == c) {
+            return new DivisionOperator(new Constant(2), new PowerOperator(new Constant(2), this));
+        }
+        return new MultiplyOperator(new Variable(c), this);
     }
 
     @Override

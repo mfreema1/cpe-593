@@ -16,6 +16,8 @@ public class MultiplyOperator extends Operator {
     public Expression caseLeftConstant(Constant a, Variable b) {
         if(a.getVal() == 0)
             return new Constant(0);
+        if(a.getVal() == 1)
+            return new Constant(1);
         return this;
     }
 
@@ -61,6 +63,10 @@ public class MultiplyOperator extends Operator {
         return new AdditionOperator(new MultiplyOperator(left.diff(c), right), new MultiplyOperator(right.diff(c), left));
     }
 
+    /**
+     * This is troublesome... how can we do this without examining all of the cases again?  It does not seem as cut
+     * and dry as the differentiation
+     */
     @Override
     public Expression integrate(char c) {
         return null;
