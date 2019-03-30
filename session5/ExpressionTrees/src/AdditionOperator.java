@@ -1,21 +1,20 @@
-public class MultiplyOperator extends Operator {
+public class AdditionOperator extends Operator {
 
-    private char symbol = '*';
+    private char symbol = '+';
 
-    public MultiplyOperator(Expression right, Expression left) {
+    public AdditionOperator(Expression right, Expression left) {
         super(right, left);
     }
 
     @Override
     public Expression caseBothConstants(Constant a, Constant b) {
-        return new Constant(a.constant * b.constant);
+        return new Constant(a.constant + b.constant);
     }
 
-    //we cannot evaluate this, just leave it
     @Override
     public Expression caseLeftConstant(Constant a, Variable b) {
-        if(a.getVal() == 0)
-            return new Constant(0);
+        if(a.constant == 0)
+            return b;
         return this;
     }
 
@@ -24,46 +23,42 @@ public class MultiplyOperator extends Operator {
         return caseLeftConstant(b, a);
     }
 
-    //can only do it if we can make a power out of it
     @Override
     public Expression caseNeitherConstant(Variable a, Variable b) {
         if(a.letter == b.letter)
-            return new PowerOperator(new Constant(2), a);
+            return new MultiplyOperator(a, new Constant(2));
         return this;
     }
 
     @Override
     public Expression caseLeftOperator(Operator a, Constant b) {
         if(b.getVal() == 0)
-            return new Constant(0);
-        if(b.getVal() == 1)
             return a;
         return this;
     }
 
-    //multiplication is commutative
+    //addition is reflexive
     @Override
     public Expression caseRightOperator(Constant a, Operator b) {
         return caseLeftOperator(b, a);
     }
 
-    //any expression times itself is the square of it
+    //just multiply by 2
     @Override
     public Expression caseBothOperators(Operator a, Operator b) {
         if(hasEqualSubtrees())
-            return new PowerOperator(new Constant(2), a);
+            return new MultiplyOperator(a, new Constant(2));
         return this;
     }
 
-    //multiplication rule
     @Override
     public Expression diff(char c) {
-        return new AdditionOperator(new MultiplyOperator(left.diff(c), right), new MultiplyOperator(right.diff(c), left));
+        return new AdditionOperator(right.diff(c), left.diff(c));
     }
 
     @Override
     public Expression integrate(char c) {
-        return null;
+        return new AdditionOperator(right.integrate(c), left.integrate(c));
     }
 
     @Override

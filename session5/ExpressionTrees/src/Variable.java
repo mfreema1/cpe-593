@@ -27,7 +27,20 @@ public class Variable implements Expression {
 
     @Override
     public Expression integrate(char c) {
-        return null;
+        if(letter == c) {
+            return new DivisionOperator(new Constant(2), new PowerOperator(new Constant(2), this));
+        }
+        return new MultiplyOperator(new Variable(c), this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == this)
+            return true;
+        if(!(o instanceof Variable))
+            return false;
+        Variable v = (Variable)o;
+        return letter == v.letter;
     }
 
     @Override

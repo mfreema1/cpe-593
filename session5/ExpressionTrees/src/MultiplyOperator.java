@@ -1,20 +1,23 @@
-public class SubtractionOperator extends Operator {
+public class MultiplyOperator extends Operator {
 
-    private char symbol = '-';
+    private char symbol = '*';
 
-    public SubtractionOperator(Expression right, Expression left) {
+    public MultiplyOperator(Expression right, Expression left) {
         super(right, left);
     }
 
     @Override
     public Expression caseBothConstants(Constant a, Constant b) {
-        return new Constant(a.constant - b.constant);
+        return new Constant(a.constant * b.constant);
     }
 
+    //we cannot evaluate this, just leave it
     @Override
     public Expression caseLeftConstant(Constant a, Variable b) {
         if(a.getVal() == 0)
-            return b;
+            return new Constant(0);
+        if(a.getVal() == 1)
+            return new Constant(1);
         return this;
     }
 
@@ -23,43 +26,47 @@ public class SubtractionOperator extends Operator {
         return caseLeftConstant(b, a);
     }
 
+    //can only do it if we can make a power out of it
     @Override
     public Expression caseNeitherConstant(Variable a, Variable b) {
-        if(a.letter == b.letter) {
-            return new Constant(0);
-        }
+        if(a.letter == b.letter)
+            return new PowerOperator(new Constant(2), a);
         return this;
     }
 
-    //anything minus zero is that thing
     @Override
     public Expression caseLeftOperator(Operator a, Constant b) {
         if(b.getVal() == 0)
+            return new Constant(0);
+        if(b.getVal() == 1)
             return a;
         return this;
     }
 
-    //get it to just a negative if need be
+    //multiplication is commutative
     @Override
     public Expression caseRightOperator(Constant a, Operator b) {
-        if(a.getVal() == 0)
-            return new MultiplyOperator(b, new Constant(-1));
-        return this;
+        return caseLeftOperator(b, a);
     }
 
-    //any expression minus itself is zero
+    //any expression times itself is the square of it
     @Override
     public Expression caseBothOperators(Operator a, Operator b) {
         if(hasEqualSubtrees())
-            return new Constant(0);
+            return new PowerOperator(new Constant(2), a);
         return this;
     }
 
+    //multiplication rule
     @Override
     public Expression diff(char c) {
-        return new SubtractionOperator(right.diff(c), left.diff(c));
+        return new AdditionOperator(new MultiplyOperator(left.diff(c), right), new MultiplyOperator(right.diff(c), left));
     }
 
+    /**
+     * This is troublesome... how can we do this without examining all of the cases again?  It does not seem as cut
+     * and dry as the differentiation
+     */
     @Override
     public Expression integrate(char c) {
         return null;

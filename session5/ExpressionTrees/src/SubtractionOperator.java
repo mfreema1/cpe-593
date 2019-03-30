@@ -1,19 +1,19 @@
-public class AdditionOperator extends Operator {
+public class SubtractionOperator extends Operator {
 
-    private char symbol = '+';
+    private char symbol = '-';
 
-    public AdditionOperator(Expression right, Expression left) {
+    public SubtractionOperator(Expression right, Expression left) {
         super(right, left);
     }
 
     @Override
     public Expression caseBothConstants(Constant a, Constant b) {
-        return new Constant(a.constant + b.constant);
+        return new Constant(a.constant - b.constant);
     }
 
     @Override
     public Expression caseLeftConstant(Constant a, Variable b) {
-        if(a.constant == 0)
+        if(a.getVal() == 0)
             return b;
         return this;
     }
@@ -25,11 +25,13 @@ public class AdditionOperator extends Operator {
 
     @Override
     public Expression caseNeitherConstant(Variable a, Variable b) {
-        if(a.letter == b.letter)
-            return new MultiplyOperator(a, new Constant(2));
+        if(a.letter == b.letter) {
+            return new Constant(0);
+        }
         return this;
     }
 
+    //anything minus zero is that thing
     @Override
     public Expression caseLeftOperator(Operator a, Constant b) {
         if(b.getVal() == 0)
@@ -37,28 +39,30 @@ public class AdditionOperator extends Operator {
         return this;
     }
 
-    //addition is reflexive
+    //get it to just a negative if need be
     @Override
     public Expression caseRightOperator(Constant a, Operator b) {
-        return caseLeftOperator(b, a);
+        if(a.getVal() == 0)
+            return new MultiplyOperator(b, new Constant(-1));
+        return this;
     }
 
-    //just multiply by 2
+    //any expression minus itself is zero
     @Override
     public Expression caseBothOperators(Operator a, Operator b) {
         if(hasEqualSubtrees())
-            return new MultiplyOperator(a, new Constant(2));
+            return new Constant(0);
         return this;
     }
 
     @Override
     public Expression diff(char c) {
-        return new AdditionOperator(right.diff(c), left.diff(c));
+        return new SubtractionOperator(right.diff(c), left.diff(c));
     }
 
     @Override
     public Expression integrate(char c) {
-        return null;
+        return new SubtractionOperator(right.integrate(c), left.integrate(c));
     }
 
     @Override
