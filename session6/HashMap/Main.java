@@ -14,7 +14,7 @@ public class Main {
         }
         in.close();
 
-        Scanner check = new Scanner(new File("words.txt"));
+        Scanner check = new Scanner(new File("hw8.dat"));
         while(check.hasNext()) {
             System.out.println(hashmap.isWord(check.next()));
         }

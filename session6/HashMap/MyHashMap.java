@@ -2,7 +2,6 @@ import java.util.*;
 
 public class MyHashMap {
 
-    private Map<Integer,Integer> collisions = new HashMap<>();
     private static final Integer FNV_OFFSET = Integer.parseUnsignedInt("2166136261");
     private static final int FNV_PRIME = 16777619;
     private LinkedList<String>[] data;
